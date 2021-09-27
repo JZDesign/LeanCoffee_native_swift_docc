@@ -1,6 +1,6 @@
 @Tutorial(time: 20) {
     @Intro(title: "Sign in and Sign up") {
-        Use the view from doc:Getting-Started to present a Sign in or Sign up form and log a user into the application.
+        Use the view from Chapter 1 to present a Sign in or Sign up form and log a user into the application.
         
         @Image(source: "coffee-beans.png", alt: "Coffee Beans")
     }
