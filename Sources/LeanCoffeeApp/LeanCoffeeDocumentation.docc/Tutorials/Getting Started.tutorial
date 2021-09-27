@@ -1,0 +1,126 @@
+@Tutorial(time: 15) {
+    @Intro(title: "Your first SwiftUI View") {
+        Create the landing page of the Lean Coffee application supporting iPhone, iPad, and darkmode.
+        
+        @Image(source: "coffee-beans.png", alt: "Coffee Beans")
+    }
+    
+    @Section(title: "Your first SwiftUI View") {
+        @ContentAndMedia {
+            Learn how to create a view and transition to another in SwiftUI
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            
+            @Step {
+                Open the XCode Project to the ContentView.swift file.
+                
+                @Code(name: "ContentView.swift", file: ContentView1.swift) {
+                    @Image(source: contentview1.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                The first page is going to be a general welcome page. On it will be the title of the app and 2 buttons: Sign in, and Sign Up.
+                
+                To get there, we need to modify the current view so that it will take up the entire screen. Go ahead and embed the `Text` object into a [`VStack`](https://developer.apple.com/documentation/swiftui/vstack)
+                
+                @Code(name: "ContentView.swift", file: ContentView2.swift) {
+                    @Image(source: contentview1.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                Now let's change the text and add the buttons. Notice how the `Spacer` pushes the content apart to the maximum distance? 
+                
+                Let's continue styling this page a bit.
+                
+                @Code(name: "ContentView.swift", file: ContentView3.swift) {
+                    @Image(source: contentview3.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                There are some things we can improve immediately on this page. First, those buttons are very similar, we can differentiate them by making one of them have a red background instead of a white one. Second, they're pretty close together, we should add some spacing to the stack view. 
+                
+                Lastly, if we make the sign up button have a large background, we need to make sure that the user can tap it. We can do that by adding a custom "label" for the button and giving it a frame with a minimum height and a width that's wider than its content. By default, iOS buttons are only tappable on their text, this masks that.
+                                
+                @Code(name: "ContentView.swift", file: ContentView4.swift) {
+                    @Image(source: contentview4.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                That button style will be used a bit in this tutorial series. So I've abstracted it into a struct called `BoldButton` and included it in the project. Go ahead and change the sign up button to a `BoldButton`. We'll also add some padding around the button to inset it from the edges of the device.
+                
+                Now that the page is mostly styled, let's make the buttons do stuff. 
+                @Code(name: "ContentView.swift", file: ContentView5.swift) {
+                    @Image(source: contentview5.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                SwiftUI is a reactive view framework. When the state of the application changes, the view will automatically render the updates, so long as the changes are broadcast in the correct way. If a view will hold or manage its own state, we need to annotate the variables with the [`@State`](https://developer.apple.com/documentation/swiftui/state) property wrapper. This wrapper will allow the view to modify and respond to the changes of those variables. 
+                
+                Presentations occur when some state becomes true. For this view, we'll present a `Sheet` when `signIn` or `signUp` becomes true. A sheet can be dismissed by a downward swipe of a finger.
+                When we need to listen to the changes of some kind of `@State` or published variable, we'll prefix the variable name with a `$`. This lets the compiler know we want the observable wrapper and not just get the "wrapped value" of the state variable. 
+                
+                @Code(name: "ContentView.swift", file: ContentView6.swift) {
+                    @Image(source: contentview6.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                One thing many developers fail to do early on, is account for the many different sizes of devices the app is available on. We're going to make sure that this sign in view looks good on both an iPad and an iPhone. We can adjust the preview device like so.
+                
+                As you can see, that title text seems tiny on an ipad. We want it to be bold on both the iPad and the iPhone.
+                
+                @Code(name: "ContentView.swift", file: ContentView7.swift) {
+                    @Image(source: contentview7.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                If the view is larger than an iPhone, we'll need to make the font size larger. To figure out the screen size, we'll use a [`GeometryReader`](https://developer.apple.com/documentation/swiftui/geometryreader). The `GeometryReader` will let you inspect the size of whatever view you're placing the G.R. into. This is top level, so it will let us read the screen size.
+                
+                As part of this change, we'll add a `frame`. Without adding this frame and pushing it to fill the width, the `GeometryReader` would collapse the width of the view to the size of its content. Just to see what would happen, go ahead and comment out the `frame` and re-render the preview.
+             
+                @Code(name: "ContentView.swift", file: ContentView8.swift) {
+                    @Image(source: contentview8.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                There is too much white space on this page. I'm no designer, but we can do better than this. Let's add a background image that fills the entire background. 
+                
+                By default, SwiftUI images are the exact size that the file says it is. However, we can make it resizable. When we do, it will scale to the maximum size possible while adhering to the [aspect rules](https://developer.apple.com/documentation/swiftui/fitting-images-into-available-space). For this, we want to `fill` the view, not `fit` the image in it.
+                Additionally, we need to tell the image to ignore the safe area so it will expand underneath the status bar above or the cutouts on the newer iPhones.
+             
+                @Code(name: "ContentView.swift", file: ContentView9.swift) {
+                    @Image(source: contentview9.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                Next, we are going to look at the view in Dark Mode and make sure we account for that as well.
+             
+                In both Light and Dark mode, the title text is tough to read on top of those coffee beans. Let's fix that. 
+                @Code(name: "ContentView.swift", file: ContentView10.swift) {
+                    @Image(source: contentview10.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+            
+            @Step {
+                To figure out what the user's preferred color scheme is, we'll use the [`colorScheme`](https://developer.apple.com/documentation/swiftui/environmentvalues/colorscheme) environment variable that is available in SwiftUI. We're going to add an overlay color to the background image of the view. For light mode it will be `.white` and dark mode it will be `.black`. Go ahead an create a variable up top that returns either color, then on the image we'll add the overlay with opacity.
+                
+                Order matters here. Try seeing what it would look like if you put the overlay after the `edgesIgnoringSafeArea` line. 
+
+                @Code(name: "ContentView.swift", file: ContentView12.swift) {
+                    @Image(source: contentview12.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone")
+                }
+            }
+        }
+    }
+}

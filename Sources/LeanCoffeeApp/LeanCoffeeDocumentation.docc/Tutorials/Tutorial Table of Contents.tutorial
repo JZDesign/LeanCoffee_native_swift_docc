@@ -1,0 +1,64 @@
+@Tutorials(name: "Lean Coffee - iOS") {
+    @Intro(title: "Lean Coffee") {
+        Create a Lean Coffee app for iOS! Create lean coffee events, topics, and votes without the pens or sticky notes!
+        
+        @Image(source: "post-it-wide.png", alt: "Lean Coffee post its")
+    }
+    
+    @Chapter(name: "Getting started with SwiftUI") {
+        Create your first views in SwiftUI and navigate from one view to another.
+
+        @Image(source: "sticky1.png", alt: "chapter header")
+        
+        @TutorialReference(tutorial: "doc:Getting-Started")
+    }
+    
+    @Chapter(name: "Authentication") {
+        Create the Sign in and Sign up views of the application and log the user in!
+
+        @Image(source: "sticky2.png", alt: "chapter header")
+        
+        @TutorialReference(tutorial: "doc:Sign-in-and-Sign-up")
+    }
+    
+    @Chapter(name: "The Presenter Pattern") {
+        Learn about the presenter pattern.
+
+        @Image(source: "sticky3.png", alt: "chapter header")
+        
+        @TutorialReference(tutorial: "doc:Presenter")
+    }
+    
+    
+    @Chapter(name: "Loading and Errors") {
+        Create simple and reusable views that will show loading states and errors. 
+
+        @Image(source: "sticky4.png", alt: "chapter header")
+        
+        @TutorialReference(tutorial: "doc:Loading-and-Errors")
+    }
+    
+    @Chapter(name: "Dependency Injection and the List View") {
+        Create the Lean Coffee App's main page that contains a list of all lean coffee events and learn about Dependency Injection in SwiftUI
+
+        @Image(source: "sticky5.png", alt: "chapter header")
+        
+        @TutorialReference(tutorial: "doc:List-View")
+    }
+    
+    @Chapter(name: "In the Topics") {
+        Create custom list rows, complete with swipe actions and other fun stuff.
+        
+        @Image(source: "sticky6.png", alt: "chapter header")
+        
+        @TutorialReference(tutorial: "doc:Lean-Coffee-Topics")
+    }
+    
+    @Chapter(name: "Create New Events and Topics") {
+        Set up the views responsible for creating the data that this application consumes.
+        
+        @Image(source: "sticky7.png", alt: "chapter header")
+        
+        @TutorialReference(tutorial: "doc:New-Lean-Coffee-Events-and-Topics")
+    }
+}

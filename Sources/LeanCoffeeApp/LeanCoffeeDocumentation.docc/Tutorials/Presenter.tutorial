@@ -1,0 +1,212 @@
+@Tutorial(time: 35) {
+    @Intro(title: "The Presenter Pattern") {
+        In this chapter we'll refactor the Sign in and Sign up views to use the Presenter pattern. This will allow us to reuse some of the code, and pull the business logic out of the view.
+        
+        @Image(source: "coffee-beans.png", alt: "Coffee Beans")
+    }
+    
+    @Section(title: "A basic Presenter") {
+        @ContentAndMedia {
+
+            1. When should the view be in a loading state?
+            1. Are there any meaningful errors to display?
+            1. When should a new view be presented?
+
+            These are several common questions that nearly every view will have that a presenter could answer. We can create a generic presenter to manage this core functionality and threading so that other, more specific presenters, can inherit from the generic one. 
+            
+            For more information on presenters, you can read [this article](https://www.baeldung.com/mvc-vs-mvp-pattern).
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            @Step {
+                To get started we're going to create a new file named `Presenter.swift`. In it, we're going to create a view for us to build the presenter with. 
+                @Code(name: "Presenter.swift", file: Presenter.swift) {
+                    @Image(source: "presenterview.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                Ideally, this view will allow us to trigger some events that will modify the presenter state so that we can see how to use a presenter. So we'll modify this view a bit to have some buttons.
+                
+                @Code(name: "Presenter.swift", file: Presenter1.swift) {
+                    @Image(source: "presenterview1.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                With this in place, let's create our presenter. This will be a `class` instead of a `struct` for a couple of reasons. First, we want to be able to pass a reference of it around so we can observe it from the view. Second, structs cannot be inherited from, but classes can be, and we have plans for that.
+                
+                This class will adhere to the `ObservableObject` protocol, which will allow us to use this to publish events to a SwiftUI view. Additionally, we're wrapping this class in the `MainActor` which helps to protect against app crashes caused by modifying view state from a background thread. For more detail on that, checkout this awesome [SwiftBySundell article](https://www.swiftbysundell.com/articles/the-main-actor-attribute/)
+                @Code(name: "Presenter.swift", file: Presenter2.swift)
+            }
+            
+            @Step {
+                The presenter will hold 4 variables. The boolean values are what will trigger events in the view, and the optional error value will be for more information in the view (or inheriting presenter) if it cares to know what the error was.
+                
+                The `@Published` property wrapper tells the Swift compiler that these variables can update the view state or be subscribed to in other structs and classes. You can read more about that in [Apple's documentation](https://developer.apple.com/documentation/combine) on Publishers and Subscribers.
+                @Code(name: "Presenter.swift", file: Presenter3.swift)
+            }
+            
+            @Step {
+                Next up, we need to create the function that will do all the magic. We'll call the function `perform` and we'll make it internal to the class, which means that any inheritor can use it, but otherwise it's private. 
+                
+                The only argument this function will take is another function we'll name `task`. Task will take no arguments and it could potentially throw or be asynchronous. Because `perform` will execute task which is potentially asynchronous, we also need to define `perform` as `async` 
+                @Code(name: "Presenter.swift", file: Presenter4.swift)
+            }
+            
+            @Step {
+                Perform's function body will start off by telling the view that work is being done, and it should show a loading state. Immediately after that, we're going to execute the `task`, catching any errors and storing them if they arise. Finally when the work is done, we need to tell the view to stop loading. _Note that we're not explicitly storing `didFinish = true` here. We want to allow the caller to specify when the work is truly finished._ 
+                
+                Sweet! Now lets see how it works.
+                @Code(name: "Presenter.swift", file: Presenter5.swift)
+            }
+            
+            @Step {
+                We'll create a `MockPresenter` that inherits from Presenter and add a function to the new presenter named `load`. This function will call perform and will simply wait for 2 seconds.
+                @Code(name: "Presenter.swift", file: Presenter6.swift)
+            }
+            
+            @Step {
+                Now we can observe the `MockPresenter` from our view using the `@ObservedObject` property wrapper. Then we'll modify the top button text to display differently if the presenter is loading, and call the load function when the button is tapped. 
+                
+                Looks good! Next, we'll present a new screen.
+                @Code(name: "Presenter.swift", file: Presenter7.swift) {
+                    @Image(source: "presenterview2.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                To present a new screen, we're simply going to tell the presenter it's finished after loading is complete, and tell the view to observe that value in the sheet method. 
+                
+                Nice and simple. Now onto error handling.
+                @Code(name: "Presenter.swift", file: Presenter8.swift) {
+                    @Image(source: "presenterview3.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                Again, this is going to be pretty straight forward. In our `MockPresenter` we're going to write a function named `throw`. Because the word throw is a keyword in swift, it's "protected." In order to use it here, we need to wrap it in backticks. Inside of that function, we'll call perform like we did in load, and we'll simulate an error by throwing a generic one.
+                
+                Then in the view, much like we used the `sheet` function, we can present an alert with the `alert` function. For now, we don't need any special actions or text. So we'll keep it plain and simple.
+                @Code(name: "Presenter.swift", file: Presenter9.swift) {
+                    @Image(source: "presenterview4.png", alt: "A view")
+                }
+            }
+        }
+    }
+    
+    @Section(title: "The Sign In Presenter") {
+        @ContentAndMedia {
+
+           With the Presenter made, we can now refactor the `SignInView` and `SignUpView`to use the pattern.  
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            @Step {
+                Let's pick up where we left off. The sign in view has a familiar variable, `didFinish` and a function that feels pretty similar to what the `perform` function does in the `Presenter`
+                
+                These similarities are a perfect reason for abstraction. 
+                @Code(name: "SignInView.swift", file: SignInView7-3.swift) 
+            }
+            
+            @Step {
+                Create a new file called `SignInPresenter.swift` and add the username, password, and access token variables to it.
+                @Code(name: "SignInPresenter.swift", file: SignInPresenter1.swift)
+            }
+            
+            @Step {
+                Afterwards, we're going to start copying and pasting some code from the view. We need to create the authorization header. Let's add that to a function called `submitForm`
+                @Code(name: "SignInPresenter.swift", file: SignInPresenter2.swift)
+            }
+            
+            @Step {
+                Then we'll move the code that fetches the access token from the view into the presenter. Because it's in a function that is asynchronous already, we don't need the `Task` block.
+                
+                But that pretty much does it for the sign in presenter.
+                @Code(name: "SignInPresenter.swift", file: SignInPresenter3.swift)
+            }
+            
+            @Step {
+                Now let's go back to the sign in view. We have some cleanup to do. 
+                @Code(name: "SignInView.swift", file: SignInView7-3.swift) 
+            }
+            
+            @Step {
+                We'll no longer need the `@State` variables we have up top, so we'll remove them and replace them with the `@ObservedObject` sign in presenter.
+                
+                Xcode will throw up some red errors, we'll clean those up next.
+                @Code(name: "SignInView.swift", file: SignInView8-1.swift) 
+            }
+            
+            @Step {
+                Now, lets replace the body of the sign in function with the call to the presenter's submit form function.
+                @Code(name: "SignInView.swift", file: SignInView8-2.swift) 
+            }
+            
+            @Step {
+                Finally, we'll replace the references to the `@State` variables to the presenter's published variables. The view's functionality hasn't changed, but none of that logic lives in the view directly. 
+                
+                Now, before we tackle the sign up view, let's go take a look at it.
+                @Code(name: "SignInView.swift", file: SignInView8-3.swift) 
+            }
+            
+            @Step {
+                The sign up view has a lot in common with the sign in view. It has fields for the username and password, and it needs to make the same request that the sign in view does to authenticate the new user. For these reasons, the sign up presenter we'll create will inherit from the sign in presenter we just finished.
+                @Code(name: "SignUpView.swift", file: SignUpView3-4-signin.swift) 
+            }
+            
+            @Step {
+                Create a new file named `SignUpPresenter`. In it, create the class inheriting from the `SignInPresenter` add the 2 fields that it still needs. 
+                @Code(name: "SignUpPresenter.swift", file: SignUpPresenter1.swift) 
+            }
+            
+            @Step {
+                Then, we can add the function to validate the password and confirm password fields match so the view doesn't have to. 
+                @Code(name: "SignUpPresenter.swift", file: SignUpPresenter2.swift) 
+            }
+            
+            @Step {
+                For the form submission, we'll override the `submitForm` function, replacing the body of the function with the request to create a user.
+                
+                You may be asking - "Wait, doesn't overriding this not let us reuse the sign in request?" Good question.
+                @Code(name: "SignUpPresenter.swift", file: SignUpPresenter3.swift) 
+            }
+            
+            @Step {
+                Nope! We can still call the super method below, which is what we'll do. 
+                
+                This wraps up the sign up presenter, let's go fix the view. 
+                @Code(name: "SignUpPresenter.swift", file: SignUpPresenter4.swift) 
+            }
+            
+            @Step {
+                There's a lot in this view 😬 
+                
+                Let's start cleaning up.
+                @Code(name: "SignUpView.swift", file: SignUpView3-4-signin.swift) 
+            }
+            
+            @Step {
+                Again, we'll start by deleting the variables up top and replacing them with the presenter.
+                @Code(name: "SignUpView.swift", file: SignUpView4-1.swift) 
+            }
+            
+            @Step {
+                Then we'll replace the body of the sign up function to call the submit form method on the presenter.
+                @Code(name: "SignUpView.swift", file: SignUpView4-2.swift) 
+            }
+            
+            @Step {
+                And finally, we'll reference the presenter for all of the variables. That is much better. 
+                
+                There are a couple of things that are still bugging me. We aren't displaying any loading or error states. In the next chapter we'll address those issues.
+                
+                @Code(name: "SignUpView.swift", file: SignUpView4-3.swift) 
+            }
+        }
+    }
+}

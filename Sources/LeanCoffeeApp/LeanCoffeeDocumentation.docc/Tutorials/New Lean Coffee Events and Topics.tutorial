@@ -1,0 +1,203 @@
+@Tutorial(time: 45) {
+    @Intro(title: "Let there be Coffee") {
+        In this chapter we'll finish implementing the application's core functionality by allowing the user to create Lean Coffee events and their topics.  
+        
+        @Image(source: "coffee-beans.png", alt: "Coffee Beans")
+    }
+
+    @Section(title: "Form Submissions") {
+        @ContentAndMedia {
+            Create a lightweight, reusable Form Submission Presenter to handle form validation before submitting data to the API
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            @Step {
+                We've created 2 forms in this application so far, the Sign in and Sign up forms, and we're about to add 2 more. There are a couple of core behaviors of a form that I think can be easliy extracted in a new presenter. They are Validation and Submission. While this presenter won't know how to handle the details of those things, it can provide a stable interface to the consuming views and establish a clear pattern throughout the application.
+                
+                Go ahead and make a new file named `FormSubmissionPresenter.swift` and add these 2 functions.
+                
+                @Code(name: "FormSubmissionPresenter.swift", file: FormSubmissionPresenter1.swift)
+            }
+            
+            @Step {
+                Then we'll include a third function. This is the function that will provide the stable interface to the views like I mentioned earlier. It does a few things: 
+                
+                *1. It validates the form or throws an error (you can do throw instead of return false when you override this later) 2. It handles concurrency and error handling by calling the perform function 3. It handles form submission.*
+                
+                @Code(name: "FormSubmissionPresenter.swift", file: FormSubmissionPresenter2.swift)
+            }
+            
+            
+            
+            @Step {
+                This will allow us to subclass this presenter and simply override the 2 internal functions to include form validation and do the work of submitting the data to the API.
+                
+                **Homework** Go ahead and use this presenter for Sign in and Sign up in place of the standard `Presenter` and display meaningful errors to the user when the form is invalid.
+                
+                @Code(name: "FormSubmissionPresenter.swift", file: FormSubmissionPresenter2-copy.swift)
+            }
+        }
+    }
+    
+    @Section(title: "Creating a Lean Coffee") {
+        @ContentAndMedia {
+            In this section we'll add a `+` button to the Home view and the form needed to create a new Lean Coffee event
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            @Step {
+                This time we'll start with the presenter. This presenter will submit data to the API to create a Lean Coffee. According to the [docs](https://github.com/JZDesign/LeanCoffeeService#create-lean-coffee) all we really need to send is a title. So we'll add the encodable model here while we're at it.
+                
+                @Code(name: "CreateLeanCoffeePresenter.swift", file: CreateLeanCoffeePresenter.swift)
+            }
+            
+            @Step {
+                Then we'll make sure we inherit from the new FormSubmissionPresenter and begin to override the functions. For now, we'll override the form submission to make the call to the api.
+                
+                @Code(name: "CreateLeanCoffeePresenter.swift", file: CreateLeanCoffeePresenter1.swift)
+            }
+            
+            @Step {
+                And we'll add some really simple form validation to make sure that there is some text present before we submit the form. You can add whatever validation here you'd prefer, even throw custom errors for you to display to the user if you'd like to.
+                
+                @Code(name: "CreateLeanCoffeePresenter.swift", file: CreateLeanCoffeePresenter2.swift)
+            }
+            
+            @Step {
+                Next, we'll create the view for this form. We'll start with a stack and a title.
+                
+                @Code(name: "CreateLeanCoffeeView.swift", file: CreateLeanCoffeeView.swift)
+            }
+            
+            @Step {
+                Then the text field and the button.
+                
+                @Code(name: "CreateLeanCoffeeView.swift", file: CreateLeanCoffeeView1.swift)
+            }
+            
+            @Step {
+                And to acutally make the request, we'll pass in the presenter. 
+                
+                If you test this out, you'll realize quickly that you don't know if it finished the job or not. Let's fix that.
+                
+                @Code(name: "CreateLeanCoffeeView.swift", file: CreateLeanCoffeeView2.swift)
+            }
+            
+            @Step {
+                What we'll do here is inject the presentation mode of the view. After the presenter finishes its work we'll dismiss the view by "recieving" an event from the Presenter's `didFinish` publisher and telling the presentation mode to dismiss.
+                
+                Now let's go add this view to the navigation so we can truly use it.
+                @Code(name: "CreateLeanCoffeeView.swift", file: CreateLeanCoffeeView3.swift)
+            }
+            
+            @Step {
+                Open the `HomeView.swift` file. Here we're going to add the standard `+` button that the user would expect.
+                @Code(name: "HomeView.swift", file: HomeView10.swift)
+            }
+            
+            @Step {
+                Up top, we'll create the `+` button as a [Navigation Link](https://developer.apple.com/documentation/swiftui/navigationlink) that will automagically handle forward and backwards navigation for us.
+                @Code(name: "HomeView.swift", file: HomeView11.swift)
+            }
+            
+            @Step {
+                Then in the body, we'll need to reference that button to add it to the navigation bar. You'll see a red `+` in the upper right hand corner of the app on the Home screen.
+                
+                If you use this as it is, you'll notice that when you finish creating a new lean coffee, it's not displayed on this view. Let's fix that.
+                @Code(name: "HomeView.swift", file: HomeView12.swift)
+            }
+            
+            @Step {
+                Finally, we can add an `onDisapear` block on the `CreateLeanCoffeeView` to refresh the page after that view dismisses.
+                @Code(name: "HomeView.swift", file: HomeView13.swift)
+            }
+        }
+    }
+    
+    
+    @Section(title: "Creating a Topic") {
+        @ContentAndMedia {
+            In this section we'll add a `+` button to the Lean Coffee view and the form needed to create a new Topic
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            @Step {
+                This is going to seem nearly identical to the last section, which means you could probably do a nice refactor on this when it's all said and done. 
+                
+                Again, we'll start with the presenter. This presenter will submit data to the API to create a Topic. We'll make the encodable body object according to the [docs](https://github.com/JZDesign/LeanCoffeeService#create-topic). If you look closely, we need to include the Lean Coffee ID in the request to the api, so we'll need to pass one into this presenter.
+                
+                @Code(name: "CreateTopicPresenter.swift", file: CreateTopicPresenter.swift)
+            }
+            
+            @Step {
+                Make sure we inherit from the new FormSubmissionPresenter and override the form submission to make the call to the api.
+                
+                @Code(name: "CreateTopicPresenter.swift", file: CreateTopicPresenter1.swift)
+            }
+            
+            @Step {
+                Again, we'll add some really simple form validation to make sure that there is some text present before we submit the form.
+                
+                @Code(name: "CreateTopicPresenter.swift", file: CreateTopicPresenter2.swift)
+            }
+            
+            @Step {
+                Next, we'll create the view for this form. We'll start with a stack and a title.
+                
+                @Code(name: "CreateTopicView.swift", file: CreateTopicView.swift)
+            }
+            
+            @Step {
+                Then the text fields and the button.
+                
+                @Code(name: "CreateTopicView.swift", file: CreateTopicView1.swift)
+            }
+            
+            @Step {
+                And to acutally make the request, we'll pass in the presenter. 
+                
+                @Code(name: "CreateTopicView.swift", file: CreateTopicView2.swift)
+            }
+            
+            @Step {
+                Then we'll add the presentation mode so we can dismiss this view when the work is done.
+                
+                Now let's go add this view to the navigation so we can truly use it.
+                @Code(name: "CreateTopicView.swift", file: CreateTopicView3.swift)
+            }
+            
+            @Step {
+                Open the `LeanCoffeeView.swift` file. Here we're going to add the standard `+` button that the user would expect.
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView14.swift)
+            }
+            
+            @Step {
+                Up top, we'll create the `+` button as a [Navigation Link](https://developer.apple.com/documentation/swiftui/navigationlink) that will automagically handle forward and backwards navigation for us.
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView15.swift)
+            }
+            
+            @Step {
+                Then in the body, we'll need to reference that button to add it to the navigation bar. You'll see a red `+` in the upper right hand corner of the app on the Home screen.
+                
+                Finally, we can add an `onDisapear` block on the `CreateTopicView` to refresh the page after that view dismisses.
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView16.swift)
+            }
+        }
+    }
+    
+    @Section(title: "You did it! 🔥☝️") {
+        @ContentAndMedia {
+            And that wraps up this tutorial series... *for now anyway.* There are many things we didn't cover, like handling accessible font sizes on small screens, screen readers, or testing. All of which would impact how the app was architected. 
+            
+            If you're intrested in learning more about those topics before I get back to this tutorial and add these topics, reach out to me (Jacob Rakidzich) on Teams.
+            
+            @Image(source: "memoji.png", alt: "Jacob Rakidzich's Memoji")
+        }
+    }
+}

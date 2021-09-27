@@ -1,0 +1,167 @@
+@Tutorial(time: 25) {
+    @Intro(title: "Loading and Errors") {
+        There's nothing worse than an app that doesn't show loading states or errors...
+        
+        Well, I take that back. Turkey bacon is worse. It's not bacon, it's just a lie.
+        
+        Anyways, In this chapter we'll cover how to make a reusable view or two that will make this easier for us.
+        @Image(source: "coffee-beans.png", alt: "Coffee Beans")
+    }
+
+    @Section(title: "A Loading View") {
+        @ContentAndMedia {
+            Create a loading view that we can use everywhere!
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            @Step {
+                To get started we're going to create a new file named `Loader.swift` The body will be a `ProgressView` with the application's accent color applied to it.
+                
+                This thing will always show as spinning. So let's make this thing smarter.
+                
+                @Code(name: "Loader.swift", file: Loader.swift) {
+                    @Image(source: "Loader1.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                We're going to need to know if the Loader should be loading or not, so we'll add in the `isLoading` variable up top. Then we'll return an `EmptyView` if that is false
+                
+                That seems like it would be all we need to do, but it isn't. Let's take a look at the actual size of this view.
+                @Code(name: "Loader.swift", file: Loader1.swift) {
+                    @Image(source: "Loader1.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                If we give it a background color of `.green`, we'll see that the view is only the size of the progress view's content. Ideally, we'd like to take over the whole screen to indicate that work is being done and to tell the user to NOT touch anything else until that's not true.
+                
+                
+                @Code(name: "Loader.swift", file: Loader2.swift) {
+                    @Image(source: "Loader2.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                Before I showed you how to use a Geometry Reader to figure out the screen size. In truth, we don't actually need the G.R. to do that. The G.R. is better suited for figuring out the size of nested views in your layout. We'll use the `UIScreen` instead. And here, we don't really care how big the screen is, we just want to fill it.
+                
+                Now that green has got to go.
+                @Code(name: "Loader.swift", file: Loader3.swift) {
+                    @Image(source: "Loader3.png", alt: "A view")
+                }
+            }
+            
+            @Step {
+                We need to support both the light and dark mode user. So we'll bring in the `colorScheme` environment variable and create the background color based on the user's preferred color scheme.
+                @Code(name: "Loader.swift", file: Loader4.swift)
+            }
+            
+            @Step {
+                Then we'll replace the green color with our background and make sure the opacity allows us to see what this view will cover up.
+                
+                @Code(name: "Loader.swift", file: Loader5.swift)
+            }
+            
+            @Step {
+                Now that we've done all of that, we can go back to our `PresenterView` that we were using to test the presenter, and try this view out.
+                
+                Before, this was in the same file as the Presenter. I went ahead and moved it to its own file.
+                @Code(name: "PresenterView.swift", file: MovePresenterView.swift)
+            }
+            
+            @Step {
+                All we need to add here is an `overlay` like we did in the content view back in chapter 1. We'll give it the `Loader` with the Presenter's `isLoading` value, and SwiftUI does the rest! But, while we're in here, we'll remove the loading text of the button.
+                
+                Now that we've figured that out, let's create a view that we can reuse for error handling. 
+                @Code(name: "PresenterView.swift", file: MovePresenterView1.swift) {
+                    @Image(source: "Loader4.png", alt: "A view")
+                }
+            }
+        }
+    }
+    
+    @Section(title: "The AsyncView") {
+        @ContentAndMedia {
+            We'll create a view that will automatically catch and display errors when they arise as well as display the Loader we created in the previous section.
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            @Step {
+                Create a new file named `AsyncView.swift`. Inside we will add a struct that adheres to the View protocol like usual. However, this view is going to be a little different. It's not intended to be a unique design. It's intended to wrap any other view we want and catch its errors. We want to be able to pass in whatever content we want and have it displayed, like we've seen with SwiftUI's `VStack`. To do that we need to use a View Builder function. 
+                
+                After the name of AsyncView up top, you'll see `<Content: View>`. This is the definition of a [generic type](https://docs.swift.org/swift-book/LanguageGuide/Generics.html) we're naming Content. Then in the body we calling a function that returns that content. As of right now, this does nothing. So lets modify it a bit so we can actually start to use it.
+                @Code(name: "AsyncView.swift", file: AsyncView.swift)
+            }
+            
+            @Step {
+                In order to actually use the `ViewBuilder` function, we need to create an initializer that explicitly states that's what it is. Then we need to assign that to the variable in the struct. The `@escaping` annotation lets the compiler know that this function that's getting passed in, won't be executed in the body of the initializer. Instead the function will "escape" the initializer and be used elsewhere. 
+                
+                Now it could be used like a VStack! `AsyncView { Text("Cool") }`
+                
+                @Code(name: "AsyncView.swift", file: AsyncView1.swift)
+            }
+            
+            @Step {
+                In order to get the `AsyncView` to automatically display errors, it needs to know when that should happen. To support this, we'll pass in a presenter. 
+                @Code(name: "AsyncView.swift", file: AsyncView2.swift)
+            }
+            
+            @Step {
+                When the presenter errors, we'll show a simple alert. For now, we're not building any custom action functionality. It will be an alert with a single cancel button.
+                @Code(name: "AsyncView.swift", file: AsyncView3.swift)
+            }
+            
+            @Step {
+                We can also use the presenter to automatically handle the loading state of this view.
+                
+                That error message isn't very useful. Let's address that next.  
+                @Code(name: "AsyncView.swift", file: AsyncView4.swift)
+            }
+            
+            @Step {
+                To allow the call site to control the error message displayed, we'll use the "provider" pattern. A provider is simply a function that gets passed in much like the content function, in fact we could call it a `Content Provider` instead of a View Builder because that's what it does. It provides the content for this view.
+                
+                With this in place, the call site will have full control (if it wants it) over what the message should be. otherwise, we'll display a generic message. 
+                @Code(name: "AsyncView.swift", file: AsyncView5.swift)
+            }
+            
+            @Step {
+                Finally, let's create a helper function to create `AsyncViews` on the fly. We'll do this in an extension of View. This will allow us to chain this function call on the end of any view we want to.
+                
+                🔥☝️ - Now let's go use the thing!!
+                @Code(name: "AsyncView.swift", file: AsyncView6.swift)
+            }
+            
+            
+            @Step {
+                Let's go update the Sign in view. 
+                
+                @Code(name: "SignInView.swift", file: SignInView8-3.swift)
+            }
+            
+            @Step {
+                
+                Add call that function at the bottom of the view's body on line 30.
+                
+                @Code(name: "SignInView.swift", file: SignInView8-4.swift)
+            }
+            
+            
+            @Step {
+                And now for the sign up view. This one we're going to do a little differently. 
+                @Code(name: "SignUpView.swift", file: SignUpView4-3.swift)
+            }
+            
+            @Step {
+                Down on line 37 we'll call the function and pass in a new generic message. The most common failure in sign up is that the user id was already taken. We can do more with this error provider, like providing custom messages based on the error itself. We'll come back and tackle that in another chapter. 
+                
+                Alright. Now we can get to the meat of the app. The Lean Coffee View. See you in the next chapter!
+                
+                @Code(name: "SignUpView.swift", file: SignUpView4-4.swift)
+            }
+        }
+    }
+}

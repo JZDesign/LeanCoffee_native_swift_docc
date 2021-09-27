@@ -1,0 +1,271 @@
+@Tutorial(time: 60) {
+    @Intro(title: "The Lean Coffee View") {
+        Learn how to crate custom list rows with swipe actions, sorting, and more.
+        
+        @Image(source: "coffee-beans.png", alt: "Coffee Beans")
+    }
+    
+    @Section(title: "Creating the Lean Coffee View") {
+        @ContentAndMedia {
+            This view will display a list of topics that will be discussed in a lean coffe, as well as allow the user to vote or close a topic. 
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            
+            @Step {
+                Find `Models.swift` and add the Topic and Vote models we'll need to finish this chapter.                
+                @Code(name: "Models.swift", file: LCModels.swift) 
+            }
+            
+            @Step {
+                Then create a file named `LeanCoffeeView.swift` and create the list with a placeholder for the topics. 
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView.swift) 
+            }
+            
+            @Step {
+                We'll add the placeholder data by iterating through a range.
+                
+                Now that we have data to see what the view will look like, let's get to it! 
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView1.swift) {
+                    @Image(source: "LeanCoffeeView1.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                Topics are  children of a lean coffee. That means, in order to pull them down we'll need to know what the parent is. Additionally, it would be helpful to the user to have some indication of what Lean Cofee they're looking at. 
+                
+                To help the user understand where they are, we'll add a description to the list view. Just in case the creator of the lean coffee is a person of many words, we'll put a line limit on the title.
+
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView2.swift) {
+                    @Image(source: "LeanCoffeeView2.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                Sweet! With that data, we can see what the view will look like. Let's add a description to the list view. We'll begin by adding the description to the row, and making sure the user can tell the title apart from the description.
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView3.swift) {
+                    @Image(source: "LeanCoffeeView3.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                Next, we'll add a view to display how many votes the topic has or if it's been completed. SwiftUI makes it pretty easy to customize views to look however you want them too. I'd like this to be a circle. So we'll give the view a background color with a radius that always returns a circle. 
+                
+                To ensure the font can be seen we'll make sure the min height and width are larger than the default font size. Then we'll pad the bottom just to separate the title from this badge.
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView4.swift) {
+                    @Image(source: "LeanCoffeeView4.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                To center it, we'll nest it in a Horizontal Stack view, surrounded by spacers.
+                
+                This also centers the other text outside of the HStack. While, it looked like the width of the row content was the width of the screen, it was actually the width of the widest subview. This pushes the width to the maximum, centering the title and description of each row.
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView5.swift) {
+                    @Image(source: "LeanCoffeeView5.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                We're going to clean up the body a little bit, and make it more apparent if the topic is completed. To do so, we'll create a `@ViewBuilder` function that computes what the badge content should be.
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView6.swift) {
+                    @Image(source: "LeanCoffeeView6.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                The rows are pretty crowded. Scroll down to line 59 and add some padding to the view. Also, it would be nice to add a header to the page.
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView7.swift) {
+                    @Image(source: "LeanCoffeeView7.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                After that, we'll add some swipe actions starting on line 61. In  previous UI frameworks, this was kind of a pain in the rear. SwiftUI has made it a breeze.
+                
+                All we need to do is invoke the `swipeActions` function and add as many buttons in there as we see fit!
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView8.swift) {
+                    @Image(source: "LeanCoffeeView8.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            @Step {
+                I'd like to get in the habbit of keeping the body pretty clean. Let's pull those buttons out into their own function.
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView9.swift) {
+                    @Image(source: "LeanCoffeeView9.png", alt: "The lean coffee view")
+
+                } 
+            }
+            
+            
+            @Step {
+                Same goes for the actual content of the row. Let's pull that out too.
+                
+                Now that we have the view figured out, let's move onto the presenter. Scroll down to the next section to get started.
+                
+                @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView10.swift) {
+                    @Image(source: "LeanCoffeeView10.png", alt: "The lean coffee view")
+
+                } 
+            }
+        }
+    }
+    
+    @Section(title: "Creating the Lean Coffee Presenter") {
+        @ContentAndMedia {
+            This will create the presenter responsible for fetching and modifying the Lean Coffee topics.
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+            
+            @Step {
+                Create a file named `LeanCoffeePresenter.swift`, it will need a lean coffee in order to fetch the topics for the page. So add one of those and write an initializer.
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter1.swift) 
+            }
+            
+            @Step {
+                Next, let's inject the token store and start making the request to get all of the topics for this view. The first thing we'll need to do is making the authorization header like we did in the Home Presenter.
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter2.swift) 
+            }
+            
+            @Step {
+                Then we can call the api and assign the result to the published array.
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter3.swift) 
+            }
+            
+            @Step {
+                While we're in here, let's do the work of sorting the topics by vote count and completed status. We want to show the topics with the most votes up top unless they've been completed.
+                
+                There are other functions that the view will require of this presenter. Aside from getting all the topics, the user can vote on a topic or mark the topic complete in the swipe actions on the list row. That means we'll need to write the authorization header some more times if we keep that in this presenter. We'll also need to do it again in other presenters, so let's make a change.
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter4.swift) 
+            }
+            
+            
+            @Step {
+                Take a look at the Http Client file. We want to find a way to reuse this and add the authorization header we need to every request. There is a function named `createRequest` that we can use. Let's make a new class to override this function and inject the header on every request.
+                
+                @Code(name: "HttpClient.swift", file: HttpClient1.swift) 
+            }
+            
+            @Step {
+                Create a file named `AuthorizedHttpClient.swift` and place the environment variable in there.
+                
+                @Code(name: "AuthorizedHttpClient.swift", file: AuthorizedHttpClient1.swift) 
+            }
+            
+            @Step {
+                Then we'll override the `createRequest` method on the `HttpClient` to include this header for every request that goes through the new `AuthorizedHttpClient`. 
+                
+                We will call the super method to take advantage of all the work we've done previously, then inject the header and return the modified result.
+                @Code(name: "AuthorizedHttpClient.swift", file: AuthorizedHttpClient2.swift) 
+            }
+            
+            @Step {
+                Navigate back to `LeanCoffeePresenter.swift`
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter4-copy.swift) 
+            }
+            
+            @Step {
+                Update the function to use the new client. When you're done, you can go to the `HomeViewPresenter` and do the same.
+                
+                Now we're going to write the other primary functions of this presenter. 
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter5.swift) 
+            }
+            
+            @Step {
+                After the user swipes the row and performs either the vote or complete actions, the view will need fresh data to reflect the changes in the api. For this reason, we're going to break out the vote and complete functions a little.
+                
+                Start with a private function named `voteOn` that will make the request to the api.
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter6.swift) 
+            }
+            
+            @Step {
+                Then we'll make a **Non**-private function named `voteAndReload` that the view can call. This doesn't need to use the `perform` function becuase the other 2 functions it calls already use it. 
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter7.swift) 
+            }
+            
+            @Step {
+                Like we did with `voteOn` we'll make a private method named `complete`.
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter8.swift) 
+            }
+            
+            @Step {
+                And another method named `completeAndReload`. 
+                
+                🔥☝️
+                @Code(name: "LeanCoffeePresenter.swift", file: LeanCoffeePresenter9.swift) 
+            }
+           
+           @Step {
+               Let's go back to the view and add this logic. 
+               @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView10-copy.swift) {
+                   @Image(source: "LeanCoffeeView10.png", alt: "The lean coffee view")
+
+               }  
+           }
+           
+           @Step {
+               Up top, we can remove the dummy data, and then down below we'll reference the presenter where we were referencing the `@State` variable. And we'll add the `task` and `refreshable` modifiers to the view.  
+               @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView11.swift) {
+                   @Image(source: "LeanCoffeeView11.png", alt: "The lean coffee view")
+
+               }  
+           }
+           
+           @Step {
+               Add functions the swipe action buttons.
+               @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView12.swift) {
+                   @Image(source: "LeanCoffeeView11.png", alt: "The lean coffee view")
+
+               }  
+           }
+           
+           @Step {
+               Then we'll make this view an async view to handle the loading and error states for us.
+               
+               After you've done that, vote on the same topic twice. You should get an error message that isn't very helpful. Let's fix that.
+
+               @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView13.swift) {
+                   @Image(source: "LeanCoffeeView13.png", alt: "The lean coffee view")
+
+               }  
+           }
+           
+           @Step {
+               We'll make an error message provider function to pass to the async view. Inside of the function body we can switch on the error while casting it to the expected type of error. If the cast succeeds we can then assert that it is a very specific error and act on that information.
+               
+               Here we care about a 409 status code. If that code is returned, we'll tell the user that they've already voted on the topic and cannot vote again.
+
+               @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView14.swift) {
+                   @Image(source: "LeanCoffeeView14.png", alt: "The lean coffee view")
+
+               }  
+           }
+           
+           @Step {
+               The app is coming along! Now the user can get all of the lean coffee events and their topics, as well as vote on or close those topics. The last body of work before it's something we can really use is adding the ability to create topics and lean coffee events.
+               
+               In the next chapter we'll cover creating Lean Coffee events and their topics. 
+           }
+        }
+    }
+}

@@ -1,0 +1,206 @@
+@Tutorial(time: 20) {
+    @Intro(title: "Sign in and Sign up") {
+        Use the view from doc:Getting-Started to present a Sign in or Sign up form and log a user into the application.
+        
+        @Image(source: "coffee-beans.png", alt: "Coffee Beans")
+    }
+    
+    @Section(title: "Creating the Sign in View") {
+        @ContentAndMedia {
+            We'll start with creating the sign in view. This view will collect a user id and password and reach out to the api to sign the user in. 
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+           
+            
+            @Step {
+                Create a file called `SignInView.swift` and put the VStack with the following text in the body.
+                
+                @Code(name: "SignInView.swift", file: SignInView1.swift) {
+                    @Image(source: signInView1.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                We'll style the text to make it bold to catch the user's attention.
+                
+                Then we'll need to add 2 state variables to handle the form we're about to create.
+                
+                @Code(name: "SignInView.swift", file: SignInView2.swift) {
+                    @Image(source: signInView2.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                Next, add a [`TextField`](https://developer.apple.com/documentation/swiftui/textfield) to handle the username and a [`SecureField`](https://developer.apple.com/documentation/swiftui/securefield) to handle the password. To center the form, we'll surround the fields with 2 `Spacer` views. 
+                
+                @Code(name: "SignInView.swift", file: SignInView3.swift) {
+                    @Image(source: signInView3.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                Now, we need a button to submit the form, and we should probably inset the contents of this view a little with `padding`.
+                
+                In order for this button to work we need to create a function that will handle the sign in of the user. After the sign in is complete, the api will return an `accessToken` for future requests made to the api on behalf of the user. Let's get to it!
+                
+                @Code(name: "SignInView.swift", file: SignInView4.swift) {
+                    @Image(source: signInView4-6.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                This api uses basic authentication, so what we'll need to do is create the authorization header ourselves.
+                
+                That header is comprised of the username and password, separated by a colon, then `base64` encoded like so:
+                
+                @Code(name: "SignInView.swift", file: SignInView5.swift) {
+                    @Image(source: signInView4-6.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                The result of a successful sign in is an accessToken which we'll need later. For now, we'll use another state variable to store it. 
+                
+                The access token comes back in the json, and ironically it's keyed "value"... That was an oversight on my part 😂🤣 Swift has a protocol we can use to serialize the json into a usable structure. Let's make an `AccessToken` struct that adheres to the `Codable` protocol.
+                
+                @Code(name: "SignInView.swift", file: SignInView5-accessToken.swift) {
+                    @Image(source: signInView4-6.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                Now that we've done all of that, we can make the request to the api and store the access token. To do this, we'll use the `HttpClient` and the `rootURL` that I've included in the application. This allows us to post to a url and decode the repsonse into a `Codable` object.
+                
+                We can't make the request from the View without wrapping it in a `Task` block. This allows asynchronous code to execute.
+                
+                @Code(name: "SignInView.swift", file: SignInView6.swift) {
+                    @Image(source: signInView4-6.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                Once sign in is complete, we'll need to react to that completion. To do that, add another state variable named `didFinish` up top.
+                
+                @Code(name: "SignInView.swift", file: SignInView7-1.swift) {
+                    @Image(source: signInView7.1.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                After we fetch the `accessToken`, toggle that value to true.
+
+                We can present the "home" screen when that value changes.                
+                @Code(name: "SignInView.swift", file: SignInView7-2.swift) {
+                    @Image(source: signInView7.1.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                Here we'll use [`fullScreenCover`](https://developer.apple.com/documentation/swiftui/form/fullscreencover(ispresented:ondismiss:content:)) instead of [`sheet`](https://developer.apple.com/documentation/swiftui/form/sheet(ispresented:ondismiss:content:)). We don't want the user to accidentally swipe away their session.
+                
+                @Code(name: "SignInView.swift", file: SignInView7-3.swift) {
+                    @Image(source: signInView7.1.png, alt: "The sign in view")
+                }
+            }
+            
+            @Step {
+                In order to actually use this in the app, you'll need to go back into `ContentView.swift` and update the presentation.
+                
+                @Code(name: "ContentView.swift", file: ContentView12.swift)
+            }
+            
+            @Step {
+                Update line 32 to show the `SignInView` and you're done with this view!
+                
+                Scroll down a ways to create the `SignUpView`.
+                
+                @Code(name: "ContentView.swift", file: ContentView13.swift)
+            }
+        }
+    }
+    
+    @Section(title: "Creating the Sign Up View") {
+        @ContentAndMedia {
+            Now we'll take our learnings from the sign in view and create the sign up view. 
+            
+            @Image(source: "swift.png", alt: "swift logo")
+        }
+        
+        @Steps {
+           
+            
+            @Step {
+                Like we did before, create a new file named `SignUpView.swift` and include this body content.
+                
+                This will be pretty similar, so we're going to move a little quicker here. We'll start with the state variables we need.
+                
+                @Code(name: "SignUpView.swift", file: SignUpView1.swift) {
+                    @Image(source: SignUpView1.png, alt: "The sign up view")
+                }
+            }
+            
+            @Step {
+                This form will need a name, username, password, and a password validation field. To keep the code cleaner, we'll separate the form fields into a variable of its own.
+                
+                After you've done that, we'll style the text like we did for the Sign In View, add a `Spacer` and our form.
+                
+                @Code(name: "SignUpView.swift", file: SignUpView2.swift) {
+                    @Image(source: SignUpView2.png, alt: "The sign up view")
+                }
+            }
+            
+            @Step {
+                Then we'll add the button and the presentation.
+                
+                We'll pretend the button works for now. Next up we'll create the sign up logic.
+                
+                @Code(name: "SignUpView.swift", file: SignUpView3-1.swift) {
+                    @Image(source: SignUpView3.png, alt: "The sign up view")
+                }
+            }
+            
+            @Step {
+                For sign up, we'll want to ensure that the user typed in the correct password. Let's add that to the do, try, catch we need. From that guard block, we could throw an error instead of returning. This would allow us to tell the user they need to make a change to one of the password fields. 
+                
+                We'll come back and handle that later.
+                
+                @Code(name: "SignUpView.swift", file: SignUpView3-2.swift) {
+                    @Image(source: SignUpView3.png, alt: "The sign up view")
+                }
+            }
+            
+            @Step {
+                Now that we've verified they typed in the right password, we're almost ready to make the request. We need to define the model that we'll send over the wire.
+                
+                Generally, I'd recommed putting this in it's own file. But I'm putting it here so we don't get file whiplash in this tutorial.
+                @Code(name: "SignUpView.swift", file: SignUpView3-2-createuser.swift) {
+                    @Image(source: SignUpView3.png, alt: "The sign up view")
+                }
+            }
+            
+            @Step {
+                The request is a simple post to the api which will encrypt the password and store it so we don't need to here. This request alone isnt enough however, we still need to sign in to get an access token. Let's replicate what we had in the Sign In View.
+                
+                @Code(name: "SignUpView.swift", file: SignUpView3-3-signup.swift) {
+                    @Image(source: SignUpView3.png, alt: "The sign up view")
+                }
+            }
+            
+            @Step {
+                I know this is making your skin crawl, but bear with me. We'll refactor this in the next chapter. 
+                
+                For now, lets replicate the sign in functionality here. We'll make the same request and store the access token just as we did before. After a successful sign up, you should see the Home view present itself.
+
+                
+
+                @Code(name: "SignUpView.swift", file: SignUpView3-4-signin.swift) {
+                    @Image(source: signInView7.2.png, alt: "The home view")
+                }
+            }
+            
+        }
+    }    
+}
