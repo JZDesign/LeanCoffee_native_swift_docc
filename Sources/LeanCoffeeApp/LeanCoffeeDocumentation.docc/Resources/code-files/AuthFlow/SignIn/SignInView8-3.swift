@@ -5,7 +5,7 @@ struct SignInView: View {
 
     func signIn() {
         Task {
-            presenter.submitForm()
+            await presenter.submitForm()
         }
     }
     
