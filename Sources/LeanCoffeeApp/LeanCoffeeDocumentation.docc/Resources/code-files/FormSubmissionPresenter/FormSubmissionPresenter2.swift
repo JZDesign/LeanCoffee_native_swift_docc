@@ -1,6 +1,6 @@
 import SwiftUI
 
-open class FormSubmissionPresenter: Presenter {
+class FormSubmissionPresenter: Presenter {
     
     func handleFormSubmission() {
         
