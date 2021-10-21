@@ -6,7 +6,7 @@
     
     @Section(title: "A laundry list of things to do.") {
         @ContentAndMedia {
-            
+            Here we'll create the "Home View" of the application. This is the primary view that will display the list of Lean Coffee events to the user. 
             @Image(source: "swift.png", alt: "swift logo")
         }
         

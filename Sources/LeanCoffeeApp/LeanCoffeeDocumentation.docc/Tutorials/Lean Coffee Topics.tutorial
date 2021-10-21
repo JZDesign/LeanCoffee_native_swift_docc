@@ -47,7 +47,9 @@
             }
             
             @Step {
-                Sweet! With that data, we can see what the view will look like. Let's add a description to the list view. We'll begin by adding the description to the row, and making sure the user can tell the title apart from the description.
+                Sweet! With that data, we can see what the view will look like. 
+                
+                We'll begin by adding the description to the row, and making sure the user can tell the title apart from the description.
                 
                 @Code(name: "LeanCoffeeView.swift", file: LeanCoffeeView3.swift) {
                     @Image(source: "LeanCoffeeView3.png", alt: "The lean coffee view")
