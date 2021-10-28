@@ -38,7 +38,7 @@
         @TutorialReference(tutorial: "doc:Loading-and-Errors")
     }
     
-    @Chapter(name: "Dependency Injection and the List View") {
+    @Chapter(name: "Lists and Dependencies") {
         Create the Lean Coffee App's main page that contains a list of all lean coffee events and learn about Dependency Injection in SwiftUI
 
         @Image(source: "sticky5.png", alt: "chapter header")

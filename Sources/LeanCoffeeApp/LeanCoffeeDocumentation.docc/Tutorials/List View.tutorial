@@ -1,5 +1,5 @@
 @Tutorial(time: 35) {
-    @Intro(title: "Dependency Injection and List Views") {
+    @Intro(title: "Create the List View and understand Swift's flavor of Dependency Injection") {
         Create the list view of all the Lean Coffee Events and learn about Dependency Injection with SwiftUI.
         @Image(source: "coffee-beans.png", alt: "Coffee Beans")
     }
