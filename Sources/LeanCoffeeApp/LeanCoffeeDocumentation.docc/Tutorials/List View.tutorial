@@ -134,7 +134,7 @@
             @Step {
                 If we replace `accessToken` with the reference to our token store, and update the code where we assign the value, all seems to work fine. However, if you launch the application and try to sign in, you'll notice the app crash with an error message like the one you see on the upper right.
                 
-                Turns out that doing dependency injection with an `@EnvironmentObject` is explicitly meant for SwiftUI views. Nothing else. We could move this into the SignInView and pass it to the presenter, but that's more ceremony than I'd like. We'll do it the other way.
+                [Turns out](https://stackoverflow.com/a/69238617/9333764) that doing dependency injection with an `@EnvironmentObject` is explicitly meant for SwiftUI views. Nothing else. We could move this into the SignInView and pass it to the presenter, but that's more ceremony than I'd like. We'll do it the other way.
                 @Code(name: "SignInPresenter.swift", file: SignInPresenter4-crash.swift) {
                     @Image(source: "crash.png", alt: "A crash log")
                 }
