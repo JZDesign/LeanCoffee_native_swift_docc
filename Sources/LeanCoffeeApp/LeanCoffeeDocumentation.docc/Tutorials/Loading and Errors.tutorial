@@ -92,7 +92,7 @@
             @Step {
                 Create a new file named `AsyncView.swift`. Inside we will add a struct that adheres to the View protocol like usual. However, this view is going to be a little different. It's not intended to be a unique design. It's intended to wrap any other view we want and catch its errors. We want to be able to pass in whatever content we want and have it displayed, like we've seen with SwiftUI's `VStack`. To do that we need to use a View Builder function. 
                 
-                After the name of AsyncView up top, you'll see `<Content: View>`. This is the definition of a [generic type](https://docs.swift.org/swift-book/LanguageGuide/Generics.html) we're naming Content. Then in the body we calling a function that returns that content. As of right now, this does nothing. So lets modify it a bit so we can actually start to use it.
+                After the name of AsyncView up top, you'll see `<Content: View>`. This is the definition of a [generic type](https://docs.swift.org/swift-book/LanguageGuide/Generics.html) we're naming Content. Then in the body we call a function that returns that content. As of right now, this does nothing. So lets modify it a bit so we can actually start to use it.
                 @Code(name: "AsyncView.swift", file: AsyncView.swift)
             }
             

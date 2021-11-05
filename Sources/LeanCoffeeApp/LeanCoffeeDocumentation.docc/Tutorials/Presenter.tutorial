@@ -100,7 +100,7 @@
     @Section(title: "The Sign In Presenter") {
         @ContentAndMedia {
 
-           With the Presenter made, we can now refactor the `SignInView` and `SignUpView`to use the pattern.  
+           With the Presenter made, we can now refactor the `SignInView` and `SignUpView` to use the pattern.  
             
             @Image(source: "swift.png", alt: "swift logo")
         }
