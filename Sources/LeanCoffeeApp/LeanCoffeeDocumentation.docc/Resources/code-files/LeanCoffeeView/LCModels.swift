@@ -17,3 +17,7 @@ struct Topic: Codable, Identifiable {
 struct Vote: Codable, Identifiable {
     let id: String
 }
+
+struct CastVote: Codable {
+    let topicId: String
+}
